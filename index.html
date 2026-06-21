@@ -6,100 +6,73 @@
 <title>Epic → ITAD collection backup</title>
 <style>
   :root {
-    --bg:        #14161b;
-    --panel:     #1c1f26;
-    --panel-2:   #20242c;
-    --ink:       #e7e9ee;
-    --ink-dim:   #9aa0ac;
-    --line:      #2c313b;
-    --amber:     #e0a23c;   /* receipt / price-tag accent */
-    --amber-ink: #1a1206;
-    --green:     #7ec47e;
-    --red:       #e2756b;
-    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --bg:#14161b; --panel:#1c1f26; --panel-2:#20242c; --ink:#e7e9ee; --ink-dim:#9aa0ac;
+    --line:#2c313b; --amber:#e0a23c; --amber-ink:#1a1206; --green:#7ec47e; --red:#e2756b;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); }
-  body { line-height: 1.5; -webkit-font-smoothing: antialiased; }
-  a { color: var(--amber); }
-
-  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
-
-  header { margin-bottom: 28px; }
-  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin: 0 0 8px; }
-  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; font-weight: 650; }
-  .lede { color: var(--ink-dim); margin: 0; max-width: 60ch; }
-
-  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 16px 0; }
-  .step > h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 12px; display: flex; align-items: baseline; gap: 10px; }
-  .step > h2 .n { color: var(--amber); }
-
-  details.step { padding: 0; }
-  details.step > summary { list-style: none; cursor: pointer; padding: 16px 20px; font-family: var(--mono); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-dim); display: flex; align-items: center; gap: 10px; }
-  details.step > summary::-webkit-details-marker { display: none; }
-  details.step > summary .n { color: var(--amber); }
-  details.step > summary .chev { margin-left: auto; transition: transform .15s ease; color: var(--ink-dim); }
-  details.step[open] > summary .chev { transform: rotate(90deg); }
-  details.step > .body { padding: 0 20px 20px; }
-
-  p.hint { color: var(--ink-dim); font-size: 14px; margin: 0 0 12px; }
-  ol.guide { color: var(--ink-dim); font-size: 14px; margin: 0 0 14px; padding-left: 20px; }
-  ol.guide li { margin: 4px 0; }
-  ol.guide code { color: var(--ink); }
-
-  .codebox { position: relative; }
-  pre { margin: 0; background: #0f1115; border: 1px solid var(--line); border-radius: 8px; padding: 14px; padding-right: 92px; overflow-x: auto; font-family: var(--mono); font-size: 12px; color: #cdd2db; max-height: 220px; }
-
-  textarea {
-    width: 100%; min-height: 150px; resize: vertical;
-    background: #0f1115; color: var(--ink); border: 1px dashed var(--line);
-    border-radius: 8px; padding: 12px; font-family: var(--mono); font-size: 12.5px;
-  }
-  textarea:focus { outline: none; border-color: var(--amber); border-style: solid; }
-  textarea.drag { border-color: var(--amber); border-style: solid; background: #15191f; }
-
-  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
-  .spacer { flex: 1; }
-
-  button, label.file {
-    font: inherit; font-size: 14px; cursor: pointer; border-radius: 8px;
-    border: 1px solid var(--line); background: var(--panel-2); color: var(--ink);
-    padding: 9px 14px; transition: border-color .12s ease, background .12s ease;
-  }
-  button:hover, label.file:hover { border-color: #3a414e; }
-  button:focus-visible, label.file:focus-within { outline: 2px solid var(--amber); outline-offset: 2px; }
-  button.primary { background: var(--amber); color: var(--amber-ink); border-color: var(--amber); font-weight: 600; }
-  button.primary:hover { background: #ecae47; }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  button.copy { position: absolute; top: 8px; right: 8px; padding: 5px 10px; font-size: 12px; }
-  label.file input { display: none; }
-
-  .msg { margin-top: 12px; font-size: 14px; font-family: var(--mono); }
-  .msg.err { color: var(--red); }
-  .msg.ok  { color: var(--green); }
-
-  /* Output card — perforated receipt edge as the one signature detail */
-  #out { display: none; }
-  #out.show { display: block; }
-  .receipt { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .receipt .tear { height: 10px; background:
-      radial-gradient(circle at 6px -2px, transparent 5px, var(--panel) 5px) repeat-x;
-      background-size: 12px 10px; border-bottom: 1px solid var(--line); }
-  .receipt .inner { padding: 18px 20px 20px; }
-  .tally { display: flex; gap: 22px; flex-wrap: wrap; font-family: var(--mono); margin: 0 0 14px; }
-  .tally div { font-size: 13px; color: var(--ink-dim); }
-  .tally b { display: block; font-size: 22px; color: var(--ink); font-weight: 650; }
-  .tally .accent b { color: var(--amber); }
-
-  .titles { max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; background: #0f1115; }
-  .titles ul { list-style: none; margin: 0; padding: 4px 0; }
-  .titles li { font-family: var(--mono); font-size: 12.5px; padding: 5px 14px; color: #cdd2db; border-bottom: 1px solid #181b21; }
-  .titles li:last-child { border-bottom: none; }
-  .titles li .id { color: var(--ink-dim); }
-
-  footer { margin-top: 28px; color: var(--ink-dim); font-size: 12.5px; }
-  footer code { color: var(--ink); }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); }
+  body { line-height:1.5; -webkit-font-smoothing:antialiased; }
+  a { color:var(--amber); }
+  .wrap { max-width:760px; margin:0 auto; padding:40px 20px 80px; }
+  header { margin-bottom:28px; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin:0 0 8px; }
+  h1 { font-size:26px; line-height:1.2; margin:0 0 6px; font-weight:650; }
+  .lede { color:var(--ink-dim); margin:0; max-width:62ch; }
+  .step { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; margin:16px 0; }
+  .step > h2 { font-size:13px; font-family:var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 12px; display:flex; align-items:baseline; gap:10px; }
+  .step > h2 .n { color:var(--amber); }
+  details.step { padding:0; }
+  details.step > summary { list-style:none; cursor:pointer; padding:16px 20px; font-family:var(--mono); font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); display:flex; align-items:center; gap:10px; }
+  details.step > summary::-webkit-details-marker { display:none; }
+  details.step > summary .n { color:var(--amber); }
+  details.step > summary .chev { margin-left:auto; transition:transform .15s ease; color:var(--ink-dim); }
+  details.step[open] > summary .chev { transform:rotate(90deg); }
+  details.step > .body { padding:0 20px 20px; }
+  p.hint { color:var(--ink-dim); font-size:14px; margin:0 0 12px; }
+  ol.guide { color:var(--ink-dim); font-size:14px; margin:0 0 14px; padding-left:20px; }
+  ol.guide li { margin:4px 0; }
+  ol.guide code, ol.guide strong { color:var(--ink); }
+  .codebox { position:relative; }
+  pre { margin:0; background:#0f1115; border:1px solid var(--line); border-radius:8px; padding:14px; padding-right:92px; overflow-x:auto; font-family:var(--mono); font-size:12px; color:#cdd2db; max-height:220px; }
+  textarea { width:100%; min-height:150px; resize:vertical; background:#0f1115; color:var(--ink); border:1px dashed var(--line); border-radius:8px; padding:12px; font-family:var(--mono); font-size:12.5px; }
+  textarea:focus { outline:none; border-color:var(--amber); border-style:solid; }
+  textarea.drag { border-color:var(--amber); border-style:solid; background:#15191f; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:12px; }
+  .spacer { flex:1; }
+  button, label.file { font:inherit; font-size:14px; cursor:pointer; border-radius:8px; border:1px solid var(--line); background:var(--panel-2); color:var(--ink); padding:9px 14px; transition:border-color .12s ease, background .12s ease; }
+  button:hover, label.file:hover { border-color:#3a414e; }
+  button:focus-visible, label.file:focus-within { outline:2px solid var(--amber); outline-offset:2px; }
+  button.primary { background:var(--amber); color:var(--amber-ink); border-color:var(--amber); font-weight:600; }
+  button.primary:hover { background:#ecae47; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button.copy { position:absolute; top:8px; right:8px; padding:5px 10px; font-size:12px; }
+  label.file input { display:none; }
+  .keyfield { margin-top:12px; }
+  .keyfield label { display:block; font-size:12px; color:var(--ink-dim); font-family:var(--mono); margin-bottom:5px; }
+  .keyfield input { width:100%; background:#0f1115; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-family:var(--mono); font-size:12.5px; }
+  .keyfield input:focus { outline:none; border-color:var(--amber); }
+  .msg { margin-top:12px; font-size:14px; font-family:var(--mono); }
+  .msg.err { color:var(--red); } .msg.ok { color:var(--green); } .msg.work { color:var(--ink-dim); }
+  #out { display:none; } #out.show { display:block; }
+  .receipt { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .receipt .tear { height:10px; background:radial-gradient(circle at 6px -2px, transparent 5px, var(--panel) 5px) repeat-x; background-size:12px 10px; border-bottom:1px solid var(--line); }
+  .receipt .inner { padding:18px 20px 20px; }
+  .tally { display:flex; gap:22px; flex-wrap:wrap; font-family:var(--mono); margin:0 0 14px; }
+  .tally div { font-size:13px; color:var(--ink-dim); }
+  .tally b { display:block; font-size:22px; color:var(--ink); font-weight:650; }
+  .tally .accent b { color:var(--amber); }
+  .tally .miss b { color:var(--red); }
+  .titles { max-height:240px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; background:#0f1115; }
+  .titles ul { list-style:none; margin:0; padding:4px 0; }
+  .titles li { font-family:var(--mono); font-size:12.5px; padding:5px 14px; color:#cdd2db; border-bottom:1px solid #181b21; }
+  .titles li:last-child { border-bottom:none; }
+  .subhead { font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); margin:16px 0 6px; }
+  .subhead.miss { color:var(--red); }
+  .note { background:#1f1a12; border:1px solid #3a2f18; color:#e7d2a8; border-radius:8px; padding:12px 14px; font-size:13.5px; margin:16px 0; }
+  footer { margin-top:28px; color:var(--ink-dim); font-size:12.5px; }
+  footer code, footer strong { color:var(--ink); }
 </style>
 </head>
 <body>
@@ -108,18 +81,18 @@
   <header>
     <p class="eyebrow">Epic Games → IsThereAnyDeal</p>
     <h1>Turn your Epic order history into an ITAD collection backup</h1>
-    <p class="lede">Runs entirely in your browser. No login, no API key, nothing sent anywhere. Paste your Epic order JSON, get a <code>collection.backup.json</code> to import on ITAD's collection page.</p>
+    <p class="lede">Resolves each game to its real ITAD id (by Epic offer id, falling back to title) and writes a <code>collection.backup.json</code> you import yourself. No login, no API key needed, no server — lookups go straight to ITAD's public endpoints from your browser.</p>
   </header>
 
   <details class="step">
     <summary><span class="n">0</span> Get your Epic order JSON <span class="chev">›</span></summary>
     <div class="body">
-      <p class="hint">Epic only shows ten orders per page. This script walks every page for you and saves one combined file — no clicking Next and copying from the Network tab.</p>
+      <p class="hint">Epic shows ten orders per page. This script walks every page for you and saves one combined file.</p>
       <ol class="guide">
         <li>Sign in to Epic and open <a href="https://www.epicgames.com/account/transactions" target="_blank" rel="noopener">epicgames.com/account/transactions</a>.</li>
-        <li>Open DevTools (<code>F12</code>) and go to the <strong>Console</strong> tab.</li>
-        <li>Paste the script below, press <code>Enter</code>, and let it finish.</li>
-        <li>It copies the JSON to your clipboard and downloads <code>epic-orders.json</code>. Use either below.</li>
+        <li>Open DevTools (<code>F12</code>) → <strong>Console</strong> tab.</li>
+        <li>Paste the script below, press <code>Enter</code>, let it finish.</li>
+        <li>It copies the JSON to your clipboard and downloads <code>epic-orders.json</code>.</li>
       </ol>
       <div class="codebox">
         <button class="copy" id="copyScript" type="button">Copy</button>
@@ -135,8 +108,15 @@
       <label class="file" tabindex="0">Choose file…<input id="file" type="file" accept=".json,application/json"></label>
       <span class="spacer"></span>
       <button id="clear" type="button">Clear</button>
-      <button id="convert" class="primary" type="button">Convert</button>
+      <button id="convert" class="primary" type="button">Match &amp; build file</button>
     </div>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer; font-size:12.5px; color:var(--ink-dim); font-family:var(--mono);">ITAD API key (optional — only if lookups fail)</summary>
+      <div class="keyfield">
+        <label for="apikey">Used as <code>?key=</code> on lookups. Free from isthereanydeal.com/apps. Leave blank to use the keyless endpoints.</label>
+        <input id="apikey" type="text" autocomplete="off" spellcheck="false" placeholder="paste key here (optional)">
+      </div>
+    </details>
     <div id="msg" class="msg"></div>
   </section>
 
@@ -147,10 +127,22 @@
         <div class="tally">
           <div>Orders<b id="tOrders">0</b></div>
           <div>Line items<b id="tItems">0</b></div>
-          <div class="accent">Unique games<b id="tGames">0</b></div>
-          <div>Duplicates collapsed<b id="tDupes">0</b></div>
+          <div class="accent">Matched<b id="tMatched">0</b></div>
+          <div class="miss">Unmatched<b id="tMiss">0</b></div>
         </div>
-        <div class="titles"><ul id="titleList"></ul></div>
+
+        <div class="subhead">Matched games (in the file)</div>
+        <div class="titles"><ul id="matchList"></ul></div>
+
+        <div id="missWrap" style="display:none;">
+          <div class="subhead miss">Not found on ITAD (left out)</div>
+          <div class="titles"><ul id="missList"></ul></div>
+        </div>
+
+        <div class="note" id="replaceNote" style="display:none;">
+          You already imported a broken <code>epicmanualimport</code> group. When you re-import this file, choose <strong>Replace</strong> for duplicates — or delete that empty group on ITAD first.
+        </div>
+
         <div class="row">
           <span class="spacer"></span>
           <button id="copyOut" type="button">Copy JSON</button>
@@ -162,18 +154,19 @@
   </section>
 
   <footer>
-    Import the downloaded file at <a href="https://isthereanydeal.com/collection/import/" target="_blank" rel="noopener">isthereanydeal.com/collection/import</a>.
-    Matching there is by <strong>title</strong>, so a handful of edition/bundle names may not resolve — that's expected for the no-login route.
+    Import the file at <a href="https://isthereanydeal.com/collection/import/" target="_blank" rel="noopener">isthereanydeal.com/collection/import</a>.
+    Each game is matched to its <strong>ITAD id</strong> here before export, so the collection actually populates. A few edition/bundle title variants may still not resolve — those are listed and left out.
   </footer>
 
 </div>
 
 <script>
-// ---- Core transform (verified against real Epic order data) ----------------
-function epicToItad(jsonText, opts) {
-  const group = (opts && opts.group) || "epicmanualimport";
-  const isPublic = !!(opts && opts.isPublic);
+const SHOP_URL  = "https://api.isthereanydeal.com/lookup/id/shop/16/v1"; // 16 = Epic
+const TITLE_URL = "https://api.isthereanydeal.com/lookup/id/title/v1";
+const CHUNK = 1000;
 
+// ---- Parse Epic order history into unique {offerId, title} entries ----------
+function parseEpic(jsonText) {
   const data = JSON.parse(jsonText);
   let orders;
   if (Array.isArray(data)) orders = data;
@@ -181,10 +174,8 @@ function epicToItad(jsonText, opts) {
   else if (data && Array.isArray(data.items)) orders = [data];
   else throw new Error('Unrecognised JSON. Expected Epic order history with an "orders" array.');
 
-  const seen = new Set();
-  const games = [];
-  let orderCount = 0, itemCount = 0, collapsed = 0;
-
+  const seen = new Set(), entries = [];
+  let orderCount = 0, itemCount = 0;
   for (const order of orders) {
     if (!order || !Array.isArray(order.items)) continue;
     orderCount++;
@@ -193,20 +184,61 @@ function epicToItad(jsonText, opts) {
       const title = item.description && item.description.trim();
       if (!offerId || !title) continue;
       itemCount++;
-      const key = title.toLowerCase();
-      if (seen.has(key)) { collapsed++; continue; }
-      seen.add(key);
-      games.push({ id: offerId, title: title, platforms: 0, playtime: 0 });
+      if (seen.has(offerId)) continue;
+      seen.add(offerId);
+      entries.push({ offerId, title });
     }
   }
+  return { entries, orderCount, itemCount };
+}
 
+// ---- POST a JSON array to a lookup endpoint, chunked, merged ----------------
+async function lookup(url, arr, key) {
+  const out = {};
+  for (let i = 0; i < arr.length; i += CHUNK) {
+    const chunk = arr.slice(i, i + CHUNK);
+    const u = key ? url + "?key=" + encodeURIComponent(key) : url;
+    const res = await fetch(u, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(chunk),
+    });
+    if (!res.ok) throw new Error("ITAD lookup failed (" + res.status + "). Try again, or add your API key above.");
+    Object.assign(out, await res.json());
+  }
+  return out;
+}
+
+// ---- Full pipeline: shop lookup, then title fallback, dedupe by ITAD id -----
+async function build(jsonText, key) {
+  const { entries, orderCount, itemCount } = parseEpic(jsonText);
+  if (entries.length === 0) throw new Error("No games found. This doesn't look like Epic order history.");
+
+  const offerIds = entries.map((e) => e.offerId);
+  const shopMap = await lookup(SHOP_URL, offerIds, key);
+
+  const missTitles = [...new Set(entries.filter((e) => !shopMap[e.offerId]).map((e) => e.title))];
+  const titleMap = missTitles.length ? await lookup(TITLE_URL, missTitles, key) : {};
+
+  const byItad = new Map();      // itadId -> title (dedupe across offer ids/variants)
+  const unmatched = new Set();
+  for (const e of entries) {
+    const id = shopMap[e.offerId] || titleMap[e.title] || null;
+    if (!id) { unmatched.add(e.title); continue; }
+    if (!byItad.has(id)) byItad.set(id, e.title);
+  }
+
+  const games = [...byItad].map(([id, title]) => ({ id, title, platforms: 0, playtime: 0 }));
+  const backup = { version: "03", data: [{ group: "epicmanualimport", public: false, games }] };
   return {
-    backup: { version: "03", data: [{ group: group, public: isPublic, games: games }] },
-    stats: { orders: orderCount, items: itemCount, games: games.length, collapsed: collapsed },
+    backup,
+    matched: games,
+    unmatched: [...unmatched],
+    stats: { orders: orderCount, items: itemCount, matched: games.length, unmatched: unmatched.size },
   };
 }
 
-// ---- The console script, kept as text so it can be shown + copied ----------
+// ---- Console harvest script (shown + copyable) -----------------------------
 const HARVEST_SCRIPT = String.raw`(async () => {
   const BASE = "https://accounts.epicgames.com/account/v2/payment/ajaxGetOrderHistory";
   const params = new URLSearchParams({ count: "10", sortDir: "DESC", sortBy: "DATE", locale: "en-US" });
@@ -245,89 +277,74 @@ let lastJson = "";
 
 $("scriptText").textContent = HARVEST_SCRIPT;
 
-function flash(btn, label) {
-  const old = btn.textContent;
-  btn.textContent = label;
-  setTimeout(() => { btn.textContent = old; }, 1200);
-}
+function flash(btn, label) { const old = btn.textContent; btn.textContent = label; setTimeout(() => { btn.textContent = old; }, 1200); }
+function setMsg(text, kind) { const m = $("msg"); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
 
 $("copyScript").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(HARVEST_SCRIPT); flash($("copyScript"), "Copied"); }
   catch { flash($("copyScript"), "Press Ctrl+C"); }
 });
 
-$("file").addEventListener("change", (e) => {
-  const f = e.target.files && e.target.files[0];
+function loadFile(f) {
   if (!f) return;
   const reader = new FileReader();
   reader.onload = () => { $("input").value = reader.result; setMsg("", ""); };
   reader.readAsText(f);
-});
+}
+$("file").addEventListener("change", (e) => loadFile(e.target.files && e.target.files[0]));
 
 const ta = $("input");
-["dragenter", "dragover"].forEach((ev) =>
-  ta.addEventListener(ev, (e) => { e.preventDefault(); ta.classList.add("drag"); }));
-["dragleave", "drop"].forEach((ev) =>
-  ta.addEventListener(ev, () => ta.classList.remove("drag")));
-ta.addEventListener("drop", (e) => {
-  e.preventDefault();
-  const f = e.dataTransfer.files && e.dataTransfer.files[0];
-  if (!f) return;
-  const reader = new FileReader();
-  reader.onload = () => { ta.value = reader.result; setMsg("", ""); };
-  reader.readAsText(f);
-});
+["dragenter", "dragover"].forEach((ev) => ta.addEventListener(ev, (e) => { e.preventDefault(); ta.classList.add("drag"); }));
+["dragleave", "drop"].forEach((ev) => ta.addEventListener(ev, () => ta.classList.remove("drag")));
+ta.addEventListener("drop", (e) => { e.preventDefault(); loadFile(e.dataTransfer.files && e.dataTransfer.files[0]); });
 
-function setMsg(text, kind) {
-  const m = $("msg");
-  m.textContent = text;
-  m.className = "msg" + (kind ? " " + kind : "");
+$("clear").addEventListener("click", () => { $("input").value = ""; setMsg("", ""); $("out").classList.remove("show"); lastJson = ""; });
+
+function fillList(el, titles) {
+  el.innerHTML = "";
+  for (const t of titles) { const li = document.createElement("li"); li.textContent = t; el.appendChild(li); }
 }
 
-$("clear").addEventListener("click", () => {
-  $("input").value = ""; setMsg("", ""); $("out").classList.remove("show"); lastJson = "";
-});
-
-$("convert").addEventListener("click", () => {
+$("convert").addEventListener("click", async () => {
   const raw = $("input").value.trim();
   if (!raw) { setMsg("Paste your Epic order JSON first.", "err"); return; }
+  const key = $("apikey").value.trim();
+
+  $("convert").disabled = true;
+  $("out").classList.remove("show");
+  setMsg("Looking up games on ITAD…", "work");
 
   let result;
-  try { result = epicToItad(raw); }
-  catch (err) {
+  try {
+    result = await build(raw, key);
+  } catch (err) {
     setMsg(err instanceof SyntaxError ? "That isn't valid JSON — check you copied the whole file." : err.message, "err");
-    $("out").classList.remove("show");
+    $("convert").disabled = false;
     return;
   }
 
-  const { backup, stats } = result;
-  if (stats.games === 0) {
-    setMsg("No games found. This doesn't look like Epic order history.", "err");
-    $("out").classList.remove("show");
+  const { backup, matched, unmatched, stats } = result;
+  if (stats.matched === 0) {
+    setMsg("Nothing resolved to an ITAD game. If lookups are being blocked, add your API key above and retry.", "err");
+    $("convert").disabled = false;
     return;
   }
 
   lastJson = JSON.stringify(backup, null, 2);
   $("tOrders").textContent = stats.orders;
   $("tItems").textContent = stats.items;
-  $("tGames").textContent = stats.games;
-  $("tDupes").textContent = stats.collapsed;
+  $("tMatched").textContent = stats.matched;
+  $("tMiss").textContent = stats.unmatched;
 
-  const list = $("titleList");
-  list.innerHTML = "";
-  for (const g of backup.data[0].games) {
-    const li = document.createElement("li");
-    const name = document.createTextNode(g.title + "  ");
-    const span = document.createElement("span");
-    span.className = "id";
-    span.textContent = g.id;
-    li.appendChild(name); li.appendChild(span);
-    list.appendChild(li);
-  }
+  fillList($("matchList"), matched.map((g) => g.title));
+  if (unmatched.length) { $("missWrap").style.display = "block"; fillList($("missList"), unmatched); }
+  else { $("missWrap").style.display = "none"; }
+  $("replaceNote").style.display = "block";
 
-  setMsg("Converted " + stats.items + " items into " + stats.games + " games.", "ok");
+  setMsg("Resolved " + stats.matched + " games" + (stats.unmatched ? " (" + stats.unmatched + " not found)" : "") + ".", "ok");
   $("out").classList.add("show");
   $("msg2").textContent = "";
+  $("convert").disabled = false;
 });
 
 $("copyOut").addEventListener("click", async () => {
