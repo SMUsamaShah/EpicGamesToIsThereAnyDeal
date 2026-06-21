@@ -81,7 +81,7 @@
   <header>
     <p class="eyebrow">Epic Games → IsThereAnyDeal</p>
     <h1>Turn your Epic order history into an ITAD collection backup</h1>
-    <p class="lede">Resolves each game to its real ITAD id (by Epic offer id, falling back to title) and writes a <code>collection.backup.json</code> you import yourself. No login, no API key needed, no server — lookups go straight to ITAD's public endpoints from your browser.</p>
+    <p class="lede">Resolves each game to its real ITAD id (by Epic offer id, falling back to title) and writes a <code>collection.backup.json</code> you import yourself. Everything lands in an <code>epiclibrary_desktop</code> collection by default, with empty <code>epiclibrary_android</code> and <code>epiclibrary_ios</code> alongside — move games into those on ITAD. No login, no API key needed, no server.</p>
   </header>
 
   <details class="step">
@@ -140,7 +140,9 @@
         </div>
 
         <div class="note" id="replaceNote" style="display:none;">
-          You already imported a broken <code>epicmanualimport</code> group. When you re-import this file, choose <strong>Replace</strong> for duplicates — or delete that empty group on ITAD first.
+          Games go into <code>epiclibrary_desktop</code>; sort Android/iOS into their collections on ITAD.
+          If you previously imported a broken <code>epicmanualimport</code> group, delete it on ITAD first.
+          ITAD may skip the two empty collections on import — if so, create <code>epiclibrary_android</code> and <code>epiclibrary_ios</code> in the ITAD UI once, then move games across.
         </div>
 
         <div class="row">
@@ -155,7 +157,7 @@
 
   <footer>
     Import the file at <a href="https://isthereanydeal.com/collection/import/" target="_blank" rel="noopener">isthereanydeal.com/collection/import</a>.
-    Each game is matched to its <strong>ITAD id</strong> here before export, so the collection actually populates. A few edition/bundle title variants may still not resolve — those are listed and left out.
+    Each game is matched to its <strong>ITAD id</strong> before export, so the collection actually populates. Everything starts in <code>epiclibrary_desktop</code> — move mobile titles into the Android/iOS collections on ITAD. A few edition/bundle title variants may not resolve; those are listed and left out.
   </footer>
 
 </div>
@@ -229,7 +231,13 @@ async function build(jsonText, key) {
   }
 
   const games = [...byItad].map(([id, title]) => ({ id, title, platforms: 0, playtime: 0 }));
-  const backup = { version: "03", data: [{ group: "epicmanualimport", public: false, games }] };
+  // All matched games default to the desktop group; android/ios start empty,
+  // so you can move games into them on ITAD afterwards.
+  const backup = { version: "03", data: [
+    { group: "epiclibrary_desktop", public: false, games: games },
+    { group: "epiclibrary_android", public: false, games: [] },
+    { group: "epiclibrary_ios",     public: false, games: [] },
+  ] };
   return {
     backup,
     matched: games,
