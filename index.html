@@ -200,9 +200,13 @@ async function lookup(url, arr, key) {
   for (let i = 0; i < arr.length; i += CHUNK) {
     const chunk = arr.slice(i, i + CHUNK);
     const u = key ? url + "?key=" + encodeURIComponent(key) : url;
+    // text/plain keeps this a CORS "simple" request so no preflight is sent.
+    // ITAD's preflight omits access-control-allow-headers, so an
+    // application/json content-type would be blocked; the server parses the
+    // body as JSON regardless of this header. (See ADR-008.)
     const res = await fetch(u, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(chunk),
     });
     if (!res.ok) throw new Error("ITAD lookup failed (" + res.status + "). Try again, or add your API key above.");
